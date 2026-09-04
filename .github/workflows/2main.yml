@@ -1,0 +1,23 @@
+name: Build Galaxy Swapper EXE
+on: [workflow_dispatch, push]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'  # Adapts to modern C# setups
+
+      - name: Publish EXE
+        run: dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true
+
+      - name: Upload Finished EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-executable
+          path: '**/bin/Release/**/publish/*.exe'
